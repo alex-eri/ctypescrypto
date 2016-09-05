@@ -21,7 +21,7 @@ class MyTests(distutils.cmd.Command):
             if len(result.errors):
                 print( "============ Errors disovered =================")
                 for res in result.errors:
-                    print res[0], ":", res[1]
+                    print( res[0], ":", res[1])
 
             if len(result.failures):
                 print( "============ Failures disovered =================")
