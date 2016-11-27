@@ -190,10 +190,10 @@ class Cipher(object):
         """
         if self.cipher_finalized:
             raise CipherError("No updates allowed")
-        if not isinstance(data, str):
-            raise TypeError("A string is expected")
+        if not isinstance(data, bytes):
+            raise TypeError("A bytes is expected")
         if len(data) == 0:
-            return ""
+            return b""
         outbuf = create_string_buffer(self.block_size+len(data))
         outlen = c_int(0)
         ret = libcrypto.EVP_CipherUpdate(self.ctx, outbuf, byref(outlen),
@@ -221,7 +221,7 @@ class Cipher(object):
         if outlen.value > 0:
             return outbuf.raw[:int(outlen.value)]
         else:
-            return ""
+            return b""
 
     def _clean_ctx(self):
         """
