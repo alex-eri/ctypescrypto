@@ -4,7 +4,7 @@
 """
 
 
-from ctypes import CDLL, c_char_p
+from ctypes import CDLL, c_char_p, c_void_p, c_long,c_uint64
 from ctypes.util import find_library
 import sys
 
