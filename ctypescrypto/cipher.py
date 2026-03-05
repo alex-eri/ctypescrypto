@@ -239,10 +239,7 @@ class Cipher(object):
         self.cipher_finalized = True
 
 
-#
-# Used C function block_size
-#
-libcrypto.EVP_CIPHER_block_size.argtypes = (c_void_p, )
+
 
 #Function EVP_CIPHER_CTX_cleanup renamed to EVP_CIPHER_CTX_reset
 # in the OpenSSL 1.1.0
@@ -250,17 +247,39 @@ if hasattr(libcrypto,"EVP_CIPHER_CTX_cleanup"):
     Cipher.__ctxcleanup = libcrypto.EVP_CIPHER_CTX_cleanup 
 else:
     Cipher.__ctxcleanup = libcrypto.EVP_CIPHER_CTX_reset
+
+
+
+
+# Functions ramned in OpenSSL 3
+if hasattr(libcrypto, "OPENSSL_version_major") and libcrypto.OPENSSL_version_major() >= 3:
+    libcrypto.EVP_CIPHER_get_block_size.argtypes = (c_void_p, )
+    libcrypto.EVP_CIPHER_get_iv_length.argtypes = (c_void_p, )
+    libcrypto.EVP_CIPHER_get_key_length.argtypes = (c_void_p, )
+    libcrypto.EVP_CIPHER_get_nid.argtypes = (c_void_p, )
+    libcrypto.EVP_CIPHER_get_flags.argtypes = (c_void_p, )
+
+    libcrypto.EVP_CIPHER_block_size = libcrypto.EVP_CIPHER_get_block_size
+    libcrypto.EVP_CIPHER_iv_length = libcrypto.EVP_CIPHER_get_iv_length
+    libcrypto.EVP_CIPHER_key_length = libcrypto.EVP_CIPHER_get_key_length
+    libcrypto.EVP_CIPHER_nid = libcrypto.EVP_CIPHER_get_nid
+    libcrypto.EVP_CIPHER_flags = libcrypto.EVP_CIPHER_get_flags
+
+else:
+    libcrypto.EVP_CIPHER_block_size.argtypes = (c_void_p, )
+    libcrypto.EVP_CIPHER_iv_length.argtypes = (c_void_p, )
+    libcrypto.EVP_CIPHER_key_length.argtypes = (c_void_p, )
+    libcrypto.EVP_CIPHER_nid.argtypes = (c_void_p, )
+    libcrypto.EVP_CIPHER_flags.argtypes = (c_void_p, )
+
+
 Cipher.__ctxcleanup.argtypes  = (c_void_p, )
 libcrypto.EVP_CIPHER_CTX_free.argtypes = (c_void_p, )
 libcrypto.EVP_CIPHER_CTX_new.restype = c_void_p
 libcrypto.EVP_CIPHER_CTX_set_padding.argtypes = (c_void_p, c_int)
 libcrypto.EVP_CipherFinal_ex.argtypes = (c_void_p, c_char_p, POINTER(c_int))
-libcrypto.EVP_CIPHER_flags.argtypes = (c_void_p, )
 libcrypto.EVP_CipherInit_ex.argtypes = (c_void_p, c_void_p, c_void_p, c_char_p,
                                         c_char_p, c_int)
-libcrypto.EVP_CIPHER_iv_length.argtypes = (c_void_p, )
-libcrypto.EVP_CIPHER_key_length.argtypes = (c_void_p, )
-libcrypto.EVP_CIPHER_nid.argtypes = (c_void_p, )
 libcrypto.EVP_CipherUpdate.argtypes = (c_void_p, c_char_p, POINTER(c_int),
                                        c_char_p, c_int)
 libcrypto.EVP_get_cipherbyname.restype = c_void_p
